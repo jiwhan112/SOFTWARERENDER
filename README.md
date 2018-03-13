@@ -1,2 +1,2 @@
-# SoftRenderer
-소프트렌더러 제작용 템플릿
+# SOFTWARERENDER
+소프트웨어렌더링
