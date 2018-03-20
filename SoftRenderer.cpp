@@ -9,7 +9,7 @@
 int g_nClientWidth = 640;
 int g_nClientHeight = 480;
 bool g_bIsActive;
-int radius;
+int Val;
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
@@ -142,7 +142,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		{
 			InitGDI(hWnd);
-			radius = 100;
+			Val = 0;
 		}
 		break;
 	case WM_KEYDOWN:
@@ -150,10 +150,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case VK_LEFT:
-			radius -= 10;
+			Val -= 10;
 			break;
 		case VK_RIGHT :
-			radius += 10;
+			Val += 10;
 			break;
 		}
 	
