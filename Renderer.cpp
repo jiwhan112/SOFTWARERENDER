@@ -99,6 +99,7 @@ void UpdateFrame(void)
 				Vector2 outPos(i, j);
 				Vector2 newPos = outPos * mat;
 				PutPixel(newPos);
+				
 			}
 		}
 	}
