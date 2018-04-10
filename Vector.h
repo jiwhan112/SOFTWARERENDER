@@ -84,7 +84,7 @@ public:
 
 		return *this;
 	}
-	FORCEINLINE	Vector2 & operator*=(const float scalar)
+	FORCEINLINE Vector2 & operator/=(const float scalar)
 	{
 		X /= scalar;
 		Y /= scalar;
@@ -93,7 +93,7 @@ public:
 	}
 	
 
-	FORCEINLINE	Vector2 operator*(const Matrix2 &m)const; // 행렬 곱
+	 Vector2 operator*(const Matrix2 &m)const; // 행렬 곱
 	FORCEINLINE	bool Equals(const Vector2& v, float Tolerance = KINDA_SMALL_NUMBR)const; // 동일
 	FORCEINLINE	float Dot(const Vector2&v)const; //내적
 	FORCEINLINE	float Cross(const Vector2& v)const; //외적
@@ -102,4 +102,48 @@ public:
 	
 };
 
+
+struct Vector3
+{
+public:
+	float X;
+	float Y;
+	float Z;
+	Vector3(float x, float y, float z) {
+		X = x, Y = y, Z = z;
+	}
+	Vector3() {
+		X = Y = Z = 0;
+	}
+	
+	Vector3 & operator+=(const Vector3 &v)
+	{
+		X += v.X;
+		Y += v.Y;
+		Z += v.Z;
+		return *this;
+	}
+
+	Vector3 & operator*=(const Matrix2 &m)
+	{
+		X = X * m._11 + X * m._21;
+		Y = Y * m._12 + Y * m._22;
+
+		
+		return *this;
+	}
+	void SetPoint(float InX, float InY)
+	{
+		X = InX;
+		Y = InY;
+		Z = 1.0f;
+	}
+
+	void SetVector(float InX, float InY)
+	{
+		X = InX;
+		Y = InY;
+		Z = 0.0f;
+	}
+};
 

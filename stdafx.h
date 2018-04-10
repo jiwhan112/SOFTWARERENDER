@@ -11,6 +11,9 @@
 // Windows 헤더 파일:
 #include <windows.h>
 
+//콘솔창 해더
+#include <iostream>
+using namespace std;
 // C 런타임 헤더 파일입니다.
 #include <stdlib.h>
 #include <malloc.h>
