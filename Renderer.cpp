@@ -4,13 +4,14 @@
 #include "GDIHelper.h"
 #include "Renderer.h"
 #include"Vector.h"
+#include "Triangle.h"
 
 bool IsInRange(int x, int y);
 void PutPixel(int x, int y);
 
 void PutCircle(int Radius, float ScaleA, float ScaleB);
 void PutCircle(int Radius);
-void DrawLine(Vector3 Pt1, Vector3 Pt2);
+void DrawLine(const Vector3& start, const Vector3& end);
 
 
 bool IsInRange(int x, int y)
@@ -29,100 +30,39 @@ void PutPixel(int x, int y)
 void PutPixel(Vector2 vec)
 {
 	vec.X = (int)vec.X;
-		vec.Y = (int)vec.Y;
+	vec.Y = (int)vec.Y;
 	if (!IsInRange(vec.X, vec.Y)) return;
-	
+
 	ULONG* dest = (ULONG*)g_pBits;
 	DWORD offset = g_nClientWidth * g_nClientHeight / 2 + g_nClientWidth / 2 + vec.X + g_nClientWidth * -vec.Y;
 	*(dest + offset) = g_CurrentColor;
 }
-
-Vector3 Pt1, Pt2;
-
-bool bUpdateInit = false;
-
-void UpdateFrame(void)
+void PutPixel(IntPoint pt)
 {
-	// Buffer Clear
-	SetColor(32, 128, 255);
-	Clear();
+	if (!IsInRange(pt.X, pt.Y)) return;
 
-	// Draw
-	SetColor(255, 0, 0);
-
-	//640 480
-#pragma region Circle
-//	PutCircle(50, 1, 1);
-#pragma endregion
-
-#pragma region DRAWLINE AND MOVE CIRCLE
-
-	/*int Length = 100;
-	Matrix2 mat;
-	mat.SetIdentity();
-	static float angle = 0.0f;
-	angle -= 0.1f;
-	mat.SetRotaion(angle);
-	for (int i = 0; i < Length; i++)
-	{
-		for (int j = 0; j < Length; j++)
-		{
-			if (i == j)
-			{
-				Vector2 outPos(i, j);
-				Vector2 newPos = outPos * mat;
-				PutPixel(newPos);
-
-			}
-		}
-	}*/
-
-	if (bUpdateInit == false)
-	{
-		bUpdateInit = true;
-		Pt1.SetPoint(0, 0);
-		Pt2.SetPoint(100, 100);
-	}
-	
-	
-	DrawLine(Pt1, Pt2);
-	//PutPixel(x, y);
-	Matrix2 mat;
-	mat.SetRotaion(1);
-	if (GetAsyncKeyState(VK_LEFT))
-	{
-		// 이동
-		/*Pt1 += Vector3(-1, 0, 0);
-		Pt2 += Vector3(-1, 0, 0);
-*/
-		Pt1 *= mat;
-		Pt2 *= mat;
-
-
-	}
-	if (GetAsyncKeyState(VK_RIGHT))
-	{
-		// 회전
-		Pt1 += Vector3(1, 0, 0);
-		Pt2 += Vector3(1, 0, 0);
-
-	}
-	if (GetAsyncKeyState(VK_UP))
-	{
-
-	}
-	if (GetAsyncKeyState(VK_DOWN))
-	{
-
-	}
-
-	// Buffer Swap 
-	BufferSwap();
+	ULONG* dest = (ULONG*)g_pBits;
+	DWORD offset = g_nClientWidth * g_nClientHeight / 2 + g_nClientWidth / 2 + pt.X + g_nClientWidth * -pt.Y;
+	*(dest + offset) = g_CurrentColor;
 }
 
+void DrawLine(const Vector3& start, const Vector3& end)
+{
+	float length = (end - start).Dist();
+	float inc = 1.0f / length;
+
+	int maxLength = RoundToInt(length);
+	for (int i = 0; i <= maxLength; i++)
+	{
+		float t = inc * i;
+		if (t >= length) t = 1.0f;
+		Vector3 Pt = start * (1.0f - t) + end * t;
+		PutPixel(Pt.ToIntPoint());
+	}
+
+}
 
 // Custom Draw
-
 
 void PutCircle(int Radius)
 {
@@ -164,31 +104,114 @@ void PutCircle(int Radius, float ScaleA, float ScaleB)
 }
 
 
-bool bOnTime = false;
-
-void DrawLine(Vector3 Start , Vector3 End)
+// 삼각형 그리기
+void Draw2DTriangle(const Vector3& v1, const Vector3& v2, const Vector3& v3)
 {
-	
-	Vector3 DrawVector = Vector3(End.X - Start.X, End.Y - Start.Y, End.Z - Start.Z);
-	
-	
+	float xMin, yMin;
+	float xMax, yMax;
+	xMin = yMin = INFINITY;
+	xMax = yMax = -INFINITY;
 
-	float m = float((End.Y - Start.Y) / (End.X - Start.X));
-	float y = Start.Y;
-	for (int x = Start.X; x < End.X; x++)
+	if (v1.X < xMin) xMin = v1.X;
+	if (v2.X < xMin) xMin = v2.X;
+	if (v3.X < xMin) xMin = v3.X;
+	if (v1.X > xMax) xMax = v1.X;
+	if (v2.X > xMax) xMax = v2.X;
+	if (v3.X > xMax) xMax = v3.X;
+	if (v1.Y < yMin) yMin = v1.Y;
+	if (v2.Y < yMin) yMin = v2.Y;
+	if (v3.Y < yMin) yMin = v3.Y;
+	if (v1.Y > yMax) yMax = v1.Y;
+	if (v2.Y > yMax) yMax = v2.Y;
+	if (v3.Y > yMax) yMax = v3.Y;
+
+	Vector2 u = (v2 - v1).TOVector2();
+	Vector2 v = (v3 - v1).TOVector2();
+	float dotUU = u.Dot(u);
+	float dotUV = u.Dot(v);
+	float dotVV = v.Dot(v);
+	float invDenom = 1.0f / (dotUU * dotVV - dotUV * dotUV);
+
+	// 삼각형 판단
+	for (int y = RoundToInt(yMin); y < RoundToInt(yMax); y++)
 	{
-	
-		y += m;
-			PutPixel(x, y);
-		
+		for (int x = RoundToInt(xMin); x < RoundToInt(xMax); x++)
+		{
+			Vector2 w = (Vector3((float)x, (float)y, 0.0f) - v1).TOVector2();
+			float dotUW = u.Dot(w);
+			float dotVW = v.Dot(w);
+			float outS = (dotVV * dotUW - dotUV * dotVW) * invDenom;
+			float outT = (dotUU * dotVW - dotUV * dotUW) * invDenom;
+			if (outS < 0.0f) continue;
+			if (outT < 0.0f) continue;
+			if (outS + outT > 1.0f) continue;
+
+			PutPixel(IntPoint(x, y));
+		}
 	}
-
-
-	if (!bOnTime) {
-		cout << "Vector: " << Start.X << " " << End.X << " M: " << m;
-		bOnTime = true;
-	}
-	
-
-
 }
+
+
+
+void UpdateFrame(void)
+{
+	// Buffer Clear
+	SetColor(32, 128, 255);
+	Clear();
+
+	// Draw
+	SetColor(255, 0, 0);
+
+	//640 480
+#pragma region Circle
+//	PutCircle(50, 1, 1);
+
+#pragma endregion
+
+#pragma region Draw Triangle
+// Draw
+	Vertex Pt1, Pt2, Pt3;
+	Pt1.SetPos(0.0f, 0.0f);
+	Pt2.SetPos(160.0f, 160.0f);
+	Pt3.SetPos(-20.0f, 160.0f);
+
+	Triangle  triangle(Pt1,Pt2,Pt3);
+
+	static float offsetX = 0.0f;
+	//static float offsetY = 0.0f;
+	static float angle = 0.0f;
+	static float scale = 1.0f;
+
+	if (GetAsyncKeyState(VK_LEFT)) offsetX -= 1.0f;
+	if (GetAsyncKeyState(VK_RIGHT)) offsetX += 1.0f;
+	if (GetAsyncKeyState(VK_UP)) angle += 1.0f;
+	if (GetAsyncKeyState(VK_DOWN)) angle -= 1.0f;
+	if (GetAsyncKeyState(VK_PRIOR)) scale *= 1.01f;
+	if (GetAsyncKeyState(VK_NEXT)) scale *= 0.99f;
+
+	Matrix3 TMat, RMat, SMat;
+	TMat.SetTranslation(offsetX, 0.0f);
+	RMat.SetRotation(angle);
+	SMat.SetScale(scale);
+	Matrix3 TRSMat = TMat * RMat*SMat;
+
+	
+	//triangle = triangle * TRSMat;
+	SetColor(255, 0, 0);
+
+	vector<Vector2>* vecVector2 = triangle.DrawInTriangle();
+	vector<Vector2>::iterator iter = vecVector2->begin();
+	for (iter = vecVector2->begin(); iter != vecVector2->end(); ++iter) {
+		Vector2 vec = *iter;
+		PutPixel(vec.X, vec.Y);
+	}
+	
+#pragma endregion
+
+
+	// Buffer Swap 
+	BufferSwap();
+}
+
+
+

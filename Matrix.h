@@ -1,6 +1,10 @@
 #pragma once
 #include "stdafx.h";
 
+#pragma region MAT2
+
+
+
 class Matrix2
 {
 	float PIE = 3.14f;
@@ -21,10 +25,9 @@ public:
 	{
 		SetIdentity();
 		_11 = a;
-		//	_12 = 0.0f;
-		//	_21 = 0.0f;
 		_22 = b;
 	}
+
 	void SetIdentity()
 	{
 		_11 = 1.0f;
@@ -35,15 +38,12 @@ public:
 	};
 	void SetRotaion(float degree)
 	{
-
 		float radion = Deg2Rad(degree);
 		_11 = cosf(radion);
 		_12 = -sinf(radion);
 		_21 = sinf(radion);
 		_22 = cosf(radion);
 	}
-
-
 
 #pragma region  연산자
 
@@ -132,7 +132,7 @@ public:
 		_12 = temp;
 	};
 
-	void Inverse()
+	void Inverse() //역행렬
 	{
 		float Det = _11 * _22 - _12 * _21;
 		float InvDet = 1.0f / Det;
@@ -146,3 +146,60 @@ public:
 	};
 
 };
+#pragma endregion
+
+#pragma region MAT3
+
+
+
+struct Matrix3
+{
+public:
+	float _11, _12, _13;
+	float _21, _22, _23;
+	float _31, _32, _33;
+
+	Matrix3() : _11(0), _12(0), _13(0), _21(0), _22(0), _23(0), _31(0), _32(0), _33(0)
+	{
+	};
+
+	//이동
+	void SetTranslation(float InX, float InY)
+	{
+		SetIdentity();
+		_13 = InX;
+		_23 = InY;
+	}
+	//크기
+	void SetScale(float a)
+	{
+		SetIdentity();
+		_11 = a;
+		_22 = a;
+	}
+	//초기화
+	void SetIdentity()
+	{
+		_11 = 1.0f;
+		_12 = 0.0f;
+		_13 = 0.0f;
+		_21 = 0.0f;
+		_22 = 1.0f;
+		_23 = 0.0f;
+		_31 = 0.0f;
+		_32 = 0.0f;
+		_33 = 1.0f;
+	};
+	//회전
+	void SetRotation(float degree)
+	{
+		SetIdentity();
+		_11 = cosf(Deg2Rad(degree));
+		_12 = -sinf(Deg2Rad(degree));
+		_21 = -_12;
+		_22 = _11;
+	}
+
+	Matrix3 operator *(const Matrix3 Other) const;
+};
+#pragma endregion

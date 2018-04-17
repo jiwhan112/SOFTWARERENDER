@@ -20,6 +20,8 @@ using namespace std;
 #include <memory.h>
 #include <tchar.h>
 #include <math.h>
+#include <intrin.h>
+#include <vector>
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 
@@ -29,4 +31,10 @@ using namespace std;
 FORCEINLINE float Deg2Rad(float degree)
 {
 	return degree * PI / 180.0f;
+}
+
+FORCEINLINE int RoundToInt(float F)
+{
+	// Note: the x2 is to workaround the rounding-to-nearest-even-number issue when the fraction is .5
+	return _mm_cvt_ss2si(_mm_set_ss(F + F + 0.5f)) >> 1;
 }

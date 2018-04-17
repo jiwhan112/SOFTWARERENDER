@@ -150,15 +150,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 	{
 		
-		/*switch (wParam)
-		{
-		case VK_LEFT:
-			Val -= 10;
-			break;
-		case VK_RIGHT :
-			Val += 10;
-			break;
-		}*/
+	//	break;
 	
 
 	}
