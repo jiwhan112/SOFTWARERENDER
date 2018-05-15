@@ -1,13 +1,8 @@
 #pragma once
 #include "stdafx.h";
 
-#pragma region MAT2
-
-
-
 class Matrix2
 {
-	float PIE = 3.14f;
 public:
 	float _11, _12;
 	float _21, _22;
@@ -27,7 +22,6 @@ public:
 		_11 = a;
 		_22 = b;
 	}
-
 	void SetIdentity()
 	{
 		_11 = 1.0f;
@@ -38,12 +32,15 @@ public:
 	};
 	void SetRotaion(float degree)
 	{
+
 		float radion = Deg2Rad(degree);
 		_11 = cosf(radion);
 		_12 = -sinf(radion);
 		_21 = sinf(radion);
 		_22 = cosf(radion);
 	}
+
+
 
 #pragma region  연산자
 
@@ -118,8 +115,7 @@ public:
 		_21 *= scalar;
 		_22 *= scalar;
 	};
-
-	friend Matrix2 operator*(const float scalar, const Matrix2 &m);
+	Matrix2 operator *(const Matrix2 Other) const;
 
 #pragma endregion
 
@@ -132,7 +128,7 @@ public:
 		_12 = temp;
 	};
 
-	void Inverse() //역행렬
+	void Inverse()
 	{
 		float Det = _11 * _22 - _12 * _21;
 		float InvDet = 1.0f / Det;
@@ -144,17 +140,11 @@ public:
 		_21 = -_21 * InvDet;
 		_22 = temp_11 * InvDet;
 	};
-
 };
-#pragma endregion
 
-#pragma region MAT3
-
-
-
-struct Matrix3
+class Matrix3
 {
-public:
+public :
 	float _11, _12, _13;
 	float _21, _22, _23;
 	float _31, _32, _33;
@@ -163,21 +153,20 @@ public:
 	{
 	};
 
-	//이동
 	void SetTranslation(float InX, float InY)
 	{
 		SetIdentity();
 		_13 = InX;
 		_23 = InY;
 	}
-	//크기
+
 	void SetScale(float a)
 	{
 		SetIdentity();
 		_11 = a;
 		_22 = a;
 	}
-	//초기화
+
 	void SetIdentity()
 	{
 		_11 = 1.0f;
@@ -190,7 +179,7 @@ public:
 		_32 = 0.0f;
 		_33 = 1.0f;
 	};
-	//회전
+
 	void SetRotation(float degree)
 	{
 		SetIdentity();
@@ -201,5 +190,6 @@ public:
 	}
 
 	Matrix3 operator *(const Matrix3 Other) const;
+
+
 };
-#pragma endregion

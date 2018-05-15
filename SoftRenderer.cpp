@@ -1,25 +1,25 @@
-ï»¿// SoftRenderer.cpp : ì‘ìš© í”„ë¡œê·¸ë¨ì— ëŒ€í•œ ì§„ì…ì ì„ ì •ì˜í•©ë‹ˆë‹¤.
+// SoftRenderer.cpp : ÀÀ¿ë ÇÁ·Î±×·¥¿¡ ´ëÇÑ ÁøÀÔÁ¡À» Á¤ÀÇÇÕ´Ï´Ù.
 //
 
 #include "stdafx.h"
 #include "SoftRenderer.h"
 #include "GDIHelper.h"
 #include "Renderer.h"
-
+#include "Texture.h"
 
 int g_nClientWidth = 640;
 int g_nClientHeight = 480;
 bool g_bIsActive;
-int Val;
+Texture * g_Texture;
 #define MAX_LOADSTRING 100
 
-// ì „ì—­ ë³€ìˆ˜:
-HINSTANCE hInst;                                // í˜„ì¬ ì¸ìŠ¤í„´ìŠ¤ì…ë‹ˆë‹¤.
-WCHAR szTitle[MAX_LOADSTRING];                  // ì œëª© í‘œì‹œì¤„ í…ìŠ¤íŠ¸ì…ë‹ˆë‹¤.
-WCHAR szWindowClass[MAX_LOADSTRING];            // ê¸°ë³¸ ì°½ í´ë˜ìŠ¤ ì´ë¦„ì…ë‹ˆë‹¤.
-WCHAR szDeveloper[MAX_LOADSTRING];            // ê¸°ë³¸ ì°½ í´ë˜ìŠ¤ ì´ë¦„ì…ë‹ˆë‹¤.
+// Àü¿ª º¯¼ö:
+HINSTANCE hInst;                                // ÇöÀç ÀÎ½ºÅÏ½ºÀÔ´Ï´Ù.
+WCHAR szTitle[MAX_LOADSTRING];                  // Á¦¸ñ Ç¥½ÃÁÙ ÅØ½ºÆ®ÀÔ´Ï´Ù.
+WCHAR szWindowClass[MAX_LOADSTRING];            // ±âº» Ã¢ Å¬·¡½º ÀÌ¸§ÀÔ´Ï´Ù.
+WCHAR szDeveloper[MAX_LOADSTRING];            // ±âº» Ã¢ Å¬·¡½º ÀÌ¸§ÀÔ´Ï´Ù.
 
-// ì´ ì½”ë“œ ëª¨ë“ˆì— ë“¤ì–´ ìˆëŠ” í•¨ìˆ˜ì˜ ì •ë°©í–¥ ì„ ì–¸ì…ë‹ˆë‹¤.
+// ÀÌ ÄÚµå ¸ğµâ¿¡ µé¾î ÀÖ´Â ÇÔ¼öÀÇ Á¤¹æÇâ ¼±¾ğÀÔ´Ï´Ù.
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -36,16 +36,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
-    // TODO: ì—¬ê¸°ì— ì½”ë“œë¥¼ ì…ë ¥í•©ë‹ˆë‹¤.
+    // TODO: ¿©±â¿¡ ÄÚµå¸¦ ÀÔ·ÂÇÕ´Ï´Ù.
+	g_Texture = new Texture();
 
-
-    // ì „ì—­ ë¬¸ìì—´ì„ ì´ˆê¸°í™”í•©ë‹ˆë‹¤.
+    // Àü¿ª ¹®ÀÚ¿­À» ÃÊ±âÈ­ÇÕ´Ï´Ù.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
     LoadStringW(hInstance, IDC_SOFTRENDERER, szWindowClass, MAX_LOADSTRING);
 	LoadStringW(hInstance, IDS_DEVELOPER, szDeveloper, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
 
-    // ì‘ìš© í”„ë¡œê·¸ë¨ ì´ˆê¸°í™”ë¥¼ ìˆ˜í–‰í•©ë‹ˆë‹¤.
+    // ÀÀ¿ë ÇÁ·Î±×·¥ ÃÊ±âÈ­¸¦ ¼öÇàÇÕ´Ï´Ù.
     if (!WindowInit(hInstance, nCmdShow))
     {
         return FALSE;
@@ -57,9 +57,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 //
-//  í•¨ìˆ˜: MyRegisterClass()
+//  ÇÔ¼ö: MyRegisterClass()
 //
-//  ëª©ì : ì°½ í´ë˜ìŠ¤ë¥¼ ë“±ë¡í•©ë‹ˆë‹¤.
+//  ¸ñÀû: Ã¢ Å¬·¡½º¸¦ µî·ÏÇÕ´Ï´Ù.
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
@@ -83,18 +83,18 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 }
 
 //
-//   í•¨ìˆ˜: InitInstance(HINSTANCE, int)
+//   ÇÔ¼ö: InitInstance(HINSTANCE, int)
 //
-//   ëª©ì : ì¸ìŠ¤í„´ìŠ¤ í•¸ë“¤ì„ ì €ì¥í•˜ê³  ì£¼ ì°½ì„ ë§Œë“­ë‹ˆë‹¤.
+//   ¸ñÀû: ÀÎ½ºÅÏ½º ÇÚµéÀ» ÀúÀåÇÏ°í ÁÖ Ã¢À» ¸¸µì´Ï´Ù.
 //
-//   ì„¤ëª…:
+//   ¼³¸í:
 //
-//        ì´ í•¨ìˆ˜ë¥¼ í†µí•´ ì¸ìŠ¤í„´ìŠ¤ í•¸ë“¤ì„ ì „ì—­ ë³€ìˆ˜ì— ì €ì¥í•˜ê³ 
-//        ì£¼ í”„ë¡œê·¸ë¨ ì°½ì„ ë§Œë“  ë‹¤ìŒ í‘œì‹œí•©ë‹ˆë‹¤.
+//        ÀÌ ÇÔ¼ö¸¦ ÅëÇØ ÀÎ½ºÅÏ½º ÇÚµéÀ» Àü¿ª º¯¼ö¿¡ ÀúÀåÇÏ°í
+//        ÁÖ ÇÁ·Î±×·¥ Ã¢À» ¸¸µç ´ÙÀ½ Ç¥½ÃÇÕ´Ï´Ù.
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-   hInst = hInstance; // ì¸ìŠ¤í„´ìŠ¤ í•¸ë“¤ì„ ì „ì—­ ë³€ìˆ˜ì— ì €ì¥í•©ë‹ˆë‹¤.
+   hInst = hInstance; // ÀÎ½ºÅÏ½º ÇÚµéÀ» Àü¿ª º¯¼ö¿¡ ÀúÀåÇÕ´Ï´Ù.
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
@@ -111,13 +111,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 }
 
 //
-//  í•¨ìˆ˜: WndProc(HWND, UINT, WPARAM, LPARAM)
+//  ÇÔ¼ö: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
-//  ëª©ì :  ì£¼ ì°½ì˜ ë©”ì‹œì§€ë¥¼ ì²˜ë¦¬í•©ë‹ˆë‹¤.
+//  ¸ñÀû:  ÁÖ Ã¢ÀÇ ¸Ş½ÃÁö¸¦ Ã³¸®ÇÕ´Ï´Ù.
 //
-//  WM_COMMAND  - ì‘ìš© í”„ë¡œê·¸ë¨ ë©”ë‰´ë¥¼ ì²˜ë¦¬í•©ë‹ˆë‹¤.
-//  WM_PAINT    - ì£¼ ì°½ì„ ê·¸ë¦½ë‹ˆë‹¤.
-//  WM_DESTROY  - ì¢…ë£Œ ë©”ì‹œì§€ë¥¼ ê²Œì‹œí•˜ê³  ë°˜í™˜í•©ë‹ˆë‹¤.
+//  WM_COMMAND  - ÀÀ¿ë ÇÁ·Î±×·¥ ¸Ş´º¸¦ Ã³¸®ÇÕ´Ï´Ù.
+//  WM_PAINT    - ÁÖ Ã¢À» ±×¸³´Ï´Ù.
+//  WM_DESTROY  - Á¾·á ¸Ş½ÃÁö¸¦ °Ô½ÃÇÏ°í ¹İÈ¯ÇÕ´Ï´Ù.
 //
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -127,12 +127,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
-            // ë©”ë‰´ ì„ íƒì„ êµ¬ë¬¸ ë¶„ì„í•©ë‹ˆë‹¤.
+            // ¸Ş´º ¼±ÅÃÀ» ±¸¹® ºĞ¼®ÇÕ´Ï´Ù.
             switch (wmId)
             {
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
+			case IDM_Texture:
+				g_Texture->LoadBMP("test.bmp");
+				break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
@@ -144,22 +147,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		{
 			InitGDI(hWnd);
-			Val = 0;
 		}
 		break;
-	case WM_KEYDOWN:
-	{
-		
-	//	break;
 	
-
-	}
-	break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: ì—¬ê¸°ì— hdcë¥¼ ì‚¬ìš©í•˜ëŠ” ê·¸ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+            // TODO: ¿©±â¿¡ hdc¸¦ »ç¿ëÇÏ´Â ±×¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
             EndPaint(hWnd, &ps);
         }
         break;
@@ -173,7 +168,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-// ì •ë³´ ëŒ€í™” ìƒìì˜ ë©”ì‹œì§€ ì²˜ë¦¬ê¸°ì…ë‹ˆë‹¤.
+// Á¤º¸ ´ëÈ­ »óÀÚÀÇ ¸Ş½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     UNREFERENCED_PARAMETER(lParam);
@@ -197,7 +192,7 @@ int MsgLoop(HACCEL hAccelTable)
 {
 	MSG msg;
 
-	// ê¸°ë³¸ ë©”ì‹œì§€ ë£¨í”„ì…ë‹ˆë‹¤.
+	// ±âº» ¸Ş½ÃÁö ·çÇÁÀÔ´Ï´Ù.
 	while (true)
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))

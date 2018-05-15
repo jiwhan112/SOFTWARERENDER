@@ -1,10 +1,8 @@
 #pragma once
+//Vector
 #include "stdafx.h";
 #include "Matrix.h"
-#define PIE 3.141592f
 
-
-#pragma region Point
 struct IntPoint
 {
 public:
@@ -16,10 +14,9 @@ public:
 	IntPoint(int InX, int InY) : X(InX), Y(InY) {}
 
 };
-#pragma endregion
 
-#pragma region Vector2
-struct Vector2
+
+class Vector2
 {
 public:
 	float X;
@@ -27,59 +24,66 @@ public:
 
 public:
 	Vector2() :X(0), Y(0) {}
-	Vector2(float inX, float inY) { X = inX; Y = inY; }
-	static float Dist(const Vector2&v1, const Vector2&v2); // 벡터2개 거리구하기
+	Vector2(float inX, float inY) : X(inX), Y(inY) {}
+
+	static float Dist(const Vector2&v1, const Vector2&v2); // 거리
 	static float DistSquared(const Vector2&v1, const Vector2&v2);
 	
-	Vector2 operator-(void) const//-Vector
+	Vector2 operator-() const//-Vector
 	{
 		return Vector2(-X, -Y);
 	}
 
-#pragma region 벡터연산
+	IntPoint ToIntPoint()
+	{
+		return IntPoint((int)(X), (int)(Y));
+	}
 
+	//Vector2 operator *(float scale) const;
+	//Vector2 operator *(const Matrix2 Mat) const;
+	bool Equals(const Vector2& V, float Tolerance = KINDA_SMALL_NUMBER) const;
 
-	FORCEINLINE	Vector2 operator+(const Vector2 &v) const
+	//사칙연산
+		Vector2 operator+(const Vector2 &v) const
 	{
 		return Vector2(X + v.X, Y + v.Y);
 	};
-	FORCEINLINE	Vector2 operator-(const Vector2 &v) const
+		Vector2 operator-(const Vector2 &v) const
 	{
 		return Vector2(X - v.X, Y - v.Y);
 	};
-	FORCEINLINE	Vector2 operator*(const float Scalar) const
+		Vector2 operator*(const float Scalar) const
 	{
-		return Vector2(X, Y) *Scalar;
+			Vector2 result;
+			result.X = X * Scalar;
+			result.Y = Y * Scalar;
+			return result;
 	};
-	FORCEINLINE	Vector2 operator/(const float Scalar) const
+		Vector2 operator/(const float Scalar) const
 	{
 		return Vector2(X, Y) /Scalar;
 	};
 
-	FORCEINLINE	Vector2 operator*(const Vector2 v) const
+		Vector2 operator/(const Vector2 v) const
 	{
-		return Vector2(X*v.X, Y*v.Y);
-	};
-	FORCEINLINE	Vector2 operator/(const Vector2 v) const
-	{
-		return Vector2(X / v.X, Y*v.Y);
+		return Vector2(X / v.X, Y/v.Y);
 	};
 
-	FORCEINLINE	Vector2 & operator+=(const Vector2 &v)
+		Vector2 & operator+=(const Vector2 &v)
 	{
 		X += v.X;
 		Y += v.Y;
 
 		return *this;
 	}
-	FORCEINLINE	Vector2 & operator-=(const Vector2 &v)
+		Vector2 & operator-=(const Vector2 &v)
 	{
 		X -= v.X;
 		Y -= v.Y;
 
 		return *this;
 	}
-	FORCEINLINE	Vector2 & operator*=(const Vector2 &v)
+		Vector2 & operator*=(const Vector2 &v)
 	{
 		X *= v.X;
 		Y *= v.Y;
@@ -87,48 +91,59 @@ public:
 		return *this;
 	}
 
-	FORCEINLINE	Vector2 & operator*=(const float scalar)
+		Vector2 & operator*=(const float scalar)
 	{
 		X *= scalar;
 		Y *= scalar;
 
 		return *this;
 	}
-	FORCEINLINE	Vector2 & operator/=(const Vector2 &v)
+		Vector2 & operator/=(const Vector2 &v)
 	{
 		X /= v.X;
 		Y /= v.Y;
 
 		return *this;
 	}
-	FORCEINLINE Vector2 & operator/=(const float scalar)
+		Vector2 & operator/=(const float scalar)
 	{
 		X /= scalar;
 		Y /= scalar;
 
 		return *this;
 	}
-#pragma endregion
-
-
-	 Vector2 operator*(const Matrix2 &m)const; // 행렬 곱
-
-	 float Dot(const Vector2&v)const //내적
-	 {
-		 return X * v.X + Y * v.Y;
-	 }
-
-	FORCEINLINE	bool Equals(const Vector2& v, float Tolerance = KINDA_SMALL_NUMBR)const; // 동일
 	
-	FORCEINLINE	float Cross(const Vector2& v)const; //외적 2차원에서는 이론상으로 가능
+	float Dot(const Vector2&v)const //내적
+	{
+		return X * v.X + Y * v.Y;
+	}
 
-	FORCEINLINE	void Normalize(); //노말
+//	Vector2 operator+(const Vector2& V) const;
+//	Vector2 operator-(const Vector2& V) const;
+
+	Vector2 operator*(const Matrix2 &m)const // 행렬 곱
+	{
+		Vector2 result;
+		result.X = X * m._11 + Y * m._12;
+		result.Y = X * m._21 + Y * m._22;
+		return result;
+	}
+
+
+	//FORCEINLINE	bool Equals(const Vector2& v, float Tolerance = KINDA_SMALL_NUMBER)const; // 동일
+	//	float Dot(const Vector2&v)const; //내적
+	//	float Cross(const Vector2& v)const; //외적
+
+	//	void Normalize();
 	
 };
 
-#pragma endregion
 
-#pragma region Vector3
+FORCEINLINE bool Vector2::Equals(const Vector2& V, float Tolerance) const
+{
+	return fabs(X - V.X) <= Tolerance && fabs(Y - V.Y) <= Tolerance;
+}
+
 
 struct Vector3
 {
@@ -136,54 +151,18 @@ public:
 	float X;
 	float Y;
 	float Z;
-	Vector3(float x, float y, float z) {
-		X = x, Y = y, Z = z;
-	}
-	Vector3() {
-		X = Y = Z = 0;
-	}
 
-	FORCEINLINE	Vector3 operator+(const Vector3 vec3) const
-	{
-		return Vector3(X + vec3.X, Y + vec3.Y, Z + vec3.Z);
-	};
-	FORCEINLINE	Vector3 operator-(const Vector3 vec3) const
-	{
-		return Vector3(X - vec3.X, Y - vec3.Y,Z-vec3.Z);
-	};
-	FORCEINLINE	Vector3 operator*(const Vector3 vec3) const
-	{
-		return Vector3(X * vec3.X, Y * vec3.Y, Z * vec3.Z);
-	};
-	FORCEINLINE	Vector3 operator*(const float Scalar) const
-	{
-		return Vector3(X * Scalar, Y * Scalar, Z * Scalar);
-	};
-	
+	Vector3() : X(0), Y(0), Z(0) {}
+	Vector3(float InX, float InY, float InZ) : X(InX), Y(InY), Z(InZ) {}
 
-	Vector3 & operator+=(const Vector3 &v)
-	{
-		X += v.X;
-		Y += v.Y;
-		Z += v.Z;
-		return *this;
-	}
-	
-	Vector3 & operator*=(const Matrix2 &m)
-	{
-		X = X * m._11 + X * m._21;
-		Y = Y * m._12 + Y * m._22;
-		return *this;
-	}
-
-	void SetPoint(float InX, float InY) // Point
+	void SetPoint(float InX, float InY)
 	{
 		X = InX;
 		Y = InY;
 		Z = 1.0f;
 	}
 
-	void SetVector(float InX, float InY) // Vector
+	void SetVector(float InX, float InY)
 	{
 		X = InX;
 		Y = InY;
@@ -200,26 +179,62 @@ public:
 		return X * X + Y * Y;
 	}
 
-	Vector2 TOVector2()
+	Vector2 ToVector2()
 	{
-		return Vector2(X, Y);
+		Vector2 result(X, Y);
+		return result;
 	}
 
-	//int로 반환
 	IntPoint ToIntPoint()
 	{
 		return IntPoint(RoundToInt(X), RoundToInt(Y));
 	}
 
-	float DOT(const Vector3& v) const;
-	
+	float Dot(const Vector3 v) const
+	{
+		return X * v.X + Y * v.Y + Z * v.Z;
+	}
+
+	// 연산
+	/*FORCEINLINE Vector3 operator*(float scale) const
+	{
+		Vector3 result;
+		result.X = X * scale;
+		result.Y = Y * scale;
+		result.Z = Z * scale;
+		return result;
+	}
+	FORCEINLINE Vector3 operator+(const Vector3& V) const
+	{
+		Vector3 result;
+		result.X = X + V.X;
+		result.Y = Y + V.Y;
+		result.Z = Z + V.Z;
+		return result;
+	}
+	FORCEINLINE	Vector3 operator-(const Vector3& V) const
+	{
+		Vector3 result;
+		result.X = X - V.X;
+		result.Y = Y - V.Y;
+		result.Z = Z - V.Z;
+		return result;
+	}
+
+	FORCEINLINE	Vector3 operator *(const Matrix3 Mat) const
+	{
+		Vector3 result;
+		result.X = X * Mat._11 + Y * Mat._12 + Z * Mat._13;
+		result.Y = X * Mat._21 + Y * Mat._22 + Z * Mat._23;
+		result.Z = X * Mat._31 + Y * Mat._32 + Z * Mat._33;
+		return result;
+	}*/
+
+	Vector3 operator*(float scale) const;
+	Vector3 operator+(const Vector3& V) const;
+	Vector3 operator-(const Vector3& V) const;
 	Vector3 operator *(const Matrix3 Mat) const;
-
 };
-#pragma endregion
-
-
-
 
 
 

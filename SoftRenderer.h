@@ -1,8 +1,9 @@
 #pragma once
 
 #include "resource.h"
+#include "Texture.h"
 
 extern int g_nClientWidth;
 extern int g_nClientHeight;
 extern bool g_bIsActive;
-extern int Val;
+extern Texture* g_Texture;

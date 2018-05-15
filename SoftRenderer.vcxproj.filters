@@ -13,17 +13,32 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="GDI">
+    <Filter Include="WinApi">
+      <UniqueIdentifier>{8b2e2a2c-686c-4d4a-864f-d2b2ebdcde5d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOFTWARERENDERER">
+      <UniqueIdentifier>{c1b44660-3601-4e5b-a2ff-33428e24b944}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WinApi\GDI">
       <UniqueIdentifier>{23e9d1d7-e7fa-4e1b-b3e1-f486c708c327}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Renderer">
+    <Filter Include="WinApi\App">
+      <UniqueIdentifier>{0d6601b9-2612-4bec-a657-0fa5a68b8b21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WinApi\Renderer">
       <UniqueIdentifier>{66d10662-f2f2-46b4-8fc8-446c982aae28}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Math">
+    <Filter Include="SOFTWARERENDERER\Math">
       <UniqueIdentifier>{0d488baf-7675-4f5e-b225-c9a250c71d0d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="App">
-      <UniqueIdentifier>{0d6601b9-2612-4bec-a657-0fa5a68b8b21}</UniqueIdentifier>
+    <Filter Include="SOFTWARERENDERER\Image">
+      <UniqueIdentifier>{17b3709f-4fcd-40aa-89a0-558f53a40d7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOFTWARERENDERER\Geometry">
+      <UniqueIdentifier>{b6545637-b024-4e2c-bedf-b56eccd02fcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOFTWARERENDERER\Rendering">
+      <UniqueIdentifier>{07aa7bab-4119-4fc8-8db7-84e9ad294104}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -37,22 +52,37 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="GDIHelper.h">
-      <Filter>GDI</Filter>
+      <Filter>WinApi\GDI</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.h">
-      <Filter>Renderer</Filter>
+      <Filter>WinApi\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Vector.h">
-      <Filter>Math</Filter>
+      <Filter>SOFTWARERENDERER\Math</Filter>
     </ClInclude>
     <ClInclude Include="Matrix.h">
-      <Filter>Math</Filter>
+      <Filter>SOFTWARERENDERER\Math</Filter>
     </ClInclude>
     <ClInclude Include="SoftRenderer.h">
-      <Filter>App</Filter>
+      <Filter>WinApi\App</Filter>
+    </ClInclude>
+    <ClInclude Include="Bmp.h">
+      <Filter>SOFTWARERENDERER\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>SOFTWARERENDERER\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>SOFTWARERENDERER\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>SOFTWARERENDERER\Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Triangle.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>SOFTWARERENDERER\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Raster.h">
+      <Filter>SOFTWARERENDERER\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -60,22 +90,37 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="GDIHelper.cpp">
-      <Filter>GDI</Filter>
+      <Filter>WinApi\GDI</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
-      <Filter>Renderer</Filter>
+      <Filter>WinApi\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Vector.cpp">
-      <Filter>Math</Filter>
+      <Filter>SOFTWARERENDERER\Math</Filter>
     </ClCompile>
     <ClCompile Include="Matrix.cpp">
-      <Filter>Math</Filter>
+      <Filter>SOFTWARERENDERER\Math</Filter>
     </ClCompile>
     <ClCompile Include="SoftRenderer.cpp">
-      <Filter>App</Filter>
+      <Filter>WinApi\App</Filter>
+    </ClCompile>
+    <ClCompile Include="Bmp.cpp">
+      <Filter>SOFTWARERENDERER\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>SOFTWARERENDERER\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>SOFTWARERENDERER\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>SOFTWARERENDERER\Geometry</Filter>
     </ClCompile>
     <ClCompile Include="Triangle.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>SOFTWARERENDERER\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Raster.cpp">
+      <Filter>SOFTWARERENDERER\Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

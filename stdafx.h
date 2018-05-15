@@ -5,13 +5,19 @@
 
 #pragma once
 
+
+#ifdef UNICODE
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console") 
+#else
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console") 
+#endif
+
+
 #include "targetver.h"
 
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
 // Windows 헤더 파일:
 #include <windows.h>
-
-//콘솔창 해더
 #include <iostream>
 using namespace std;
 // C 런타임 헤더 파일입니다.
@@ -21,13 +27,16 @@ using namespace std;
 #include <tchar.h>
 #include <math.h>
 #include <intrin.h>
-#include <vector>
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
-
 #define PI 3.141592f
-#define KINDA_SMALL_NUMBR 1.e-4f
+#define KINDA_SMALL_NUMBER 1.e-4f
 #define FORCEINLINE __forceinline
+#define RGBA32(r,g,b,a) ((ULONG)((BYTE)(b)) | (ULONG)(((BYTE)(g)) << 8) | (ULONG)(((BYTE)(r)) << 16) | (ULONG)(((BYTE)(a)) << 24))
+#define RGB32(r,g,b) RGBA32(r, g, b, 255)
+
+
+// 각을 라디안으로 변환
 FORCEINLINE float Deg2Rad(float degree)
 {
 	return degree * PI / 180.0f;
